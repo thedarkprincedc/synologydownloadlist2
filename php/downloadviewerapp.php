@@ -1,24 +1,24 @@
 <?php
 	ob_start("ob_gzhandler");
 	header("access-control-allow-origin: *");
-	//header('Content-Type: application/json');
+	header('Content-Type: application/json');
 	$request = (!empty($_REQUEST))?$_REQUEST:"";
 	$action = (!empty($_REQUEST["action"]))?$_REQUEST["action"]:"";
-	
-	function getRequest($url, $isJSON = false){
+	$token = (!empty($_REQUEST["token"]))?$_REQUEST["token"]:"";
+	function getRequest($url){
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url); 
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         $output = curl_exec($ch); 
         curl_close($ch);
-        return ($isJSON == true)?json_decode($output):$output;
+        return $output;
 	}
 	function login($username, $password){
 		$credentials = http_build_query(array(
 			"account" => $username,
 			"passwd" => $password
 		));
-		return getRequest("http://192.168.1.27:5000/webapi/auth.cgi?api=SYNO.API.Auth&version=2&method=login&session=DownloadStation&format=sid&".$credentials,true)->data->sid;
+		return getRequest("http://192.168.1.27:5000/webapi/auth.cgi?api=SYNO.API.Auth&version=2&method=login&session=DownloadStation&format=sid&".$credentials);
 	}
 	function getdownloads($token){
 		return getRequest("http://192.168.1.27:5000/webapi/DownloadStation/task.cgi?api=SYNO.DownloadStation.Task&version=1&method=list&additional=detail,file,transfer,peer&_sid={$token}");
@@ -29,7 +29,6 @@
 	function getLocationsFromIPS($request){
 		$list = json_decode($request["list"]);
 		$retArr = array();
-	
 		if($list){
 			foreach ($list as $key => $value) {
 				
@@ -40,19 +39,21 @@
 		}
 		return $retArr;
 	}
-	$token = login("bmosley", "DricasM4x");
 	$retArr = null;
+	
 	switch($action){
+		case "getlogintoken":
+			print(login("bmosley", "DricasM4x"));
+			die();
+			break;
 		case "getdownloads":
-			$retArr = getdownloads($token, true);		
+			$retArr = getdownloads($token);		
 			break;
 		case "getlocationfromip":
 			$retArr = getLocationFromIP($request);
 			break;
 		case "getlocationsfromips":
-			$retArr = getLocationsFromIPS($request);
-			print(json_encode($retArr));
-			die();
+			$retArr = json_encode(getLocationsFromIPS($request));
 	}
 	print($retArr);
 ?>
