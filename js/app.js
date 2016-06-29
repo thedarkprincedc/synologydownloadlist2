@@ -8,8 +8,34 @@ function addDownloadList(component, taskList) {
 	myList.parse(taskList, "json");
 	return myList;
 }
-
+var downloader = (function(cell){
+	this.tasks = null;
+	this.tasklist = null;
+	this.taskPeer = null;
+	this.init = function(){
+		
+	};
+	this.getLocations = function(){
+		$.get("./php/downloadviewerapp.php?action=getdownloads", function(data) {
+		
+		});
+	};
+	this.getLocationsFromIPS = function(){
+		if (this.taskPeers) {
+			$.post("./php/downloadviewerapp.php?action=getlocationsfromips", {
+				list : JSON.stringify(taskPeers)
+			}, function(data) {
+				
+			}, "json");
+		}
+	};
+	
+	this.getLocations();
+	//setInterval(, 5000);
+	//setInterval(this.getLocationsFromIPS, 10000);
+});
 function doOnLoad() {
+	//downloader();
 	var tasks = null;
 	var taskList = null;
 	var taskPeers = null;
@@ -20,7 +46,8 @@ function doOnLoad() {
 		cells : [{
 			id : "a",
 			text : "Download List",
-			width : 400
+			width : 400,
+			fix_size:       [true,null]
 		}, {
 			id : "b",
 			text : "kmfjmfjmrj",
@@ -157,13 +184,16 @@ function doOnLoad() {
 	 "Maintainer" : "Debian Games Team"
 	 }], "json");*/
 	var GMaps = myLayout.cells("b").attachMap();
-	GMaps.zoom = 3;
+	GMaps.zoom = 2;
 	var geocoder = new google.maps.Geocoder();
 	geocoder.geocode({
 		'address' : 'Sedova str. 80, Saint Petersburg, Russia'
 	}, function(results, status) {
-		GMaps.setCenter(results[0].geometry.location);
-		var marker = new google.maps.Marker({
+		var styleArray = [{"featureType":"all","elementType":"labels.text.fill","stylers":[{"color":"#ffffff"}]},{"featureType":"all","elementType":"labels.text.stroke","stylers":[{"color":"#000000"},{"lightness":13}]},{"featureType":"administrative","elementType":"geometry.fill","stylers":[{"color":"#000000"}]},{"featureType":"administrative","elementType":"geometry.stroke","stylers":[{"color":"#144b53"},{"lightness":14},{"weight":1.4}]},{"featureType":"landscape","elementType":"all","stylers":[{"color":"#08304b"}]},{"featureType":"poi","elementType":"geometry","stylers":[{"color":"#0c4152"},{"lightness":5}]},{"featureType":"road.highway","elementType":"geometry.fill","stylers":[{"color":"#000000"}]},{"featureType":"road.highway","elementType":"geometry.stroke","stylers":[{"color":"#0b434f"},{"lightness":25}]},{"featureType":"road.arterial","elementType":"geometry.fill","stylers":[{"color":"#000000"}]},{"featureType":"road.arterial","elementType":"geometry.stroke","stylers":[{"color":"#0b3d51"},{"lightness":16}]},{"featureType":"road.local","elementType":"geometry","stylers":[{"color":"#000000"}]},{"featureType":"transit","elementType":"all","stylers":[{"color":"#146474"}]},{"featureType":"water","elementType":"all","stylers":[{"color":"#021019"}]}];
+		
+		GMaps.setCenter({lat: 0, lng: 0});
+		//GMaps.setStyles(styleArray);
+		/*var marker = new google.maps.Marker({
 			position : results[0].geometry.location,
 			title : "dhtmlx Mailing Address"
 		});
@@ -171,7 +201,7 @@ function doOnLoad() {
 		var infowindow = new google.maps.InfoWindow({
 			content : '<b>dhtmlx</b>'
 		});
-		infowindow.open(GMaps, marker);
+		infowindow.open(GMaps, marker);*/
 	});
 
 }
