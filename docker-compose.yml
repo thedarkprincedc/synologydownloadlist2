@@ -1,0 +1,21 @@
+version: "2.1"
+services:
+     webserver:
+          build:
+               context: .
+               dockerfile: frontend.Dockerfile
+          container_name: syno_downloadlist_frontend
+          ports:
+               - "9000:80"
+          environment:
+               - SYNOLOGY_HOST=${SYNOLOGY_HOST}
+               - SYNOLOGY_PORT=${SYNOLOGY_PORT}
+               - SYNOLOGY_IPLOOKUP_HOST=${SYNOLOGY_IPLOOKUP_HOST}
+               - SYNOLOGY_IPLOOKUP_PORT=${SYNOLOGY_IPLOOKUP_PORT}
+          links:
+               - ipaddress_lookup
+     ipaddress_lookup:
+          image: fiorix/freegeoip
+          container_name: syno_downloadlist_iplookup
+          ports:
+               - "3012:8080"
