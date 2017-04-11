@@ -1,9 +1,14 @@
 .dhx_list_item{
 	font-size: .82em;
-	
+
 }
-body{
+html, body {
+	width: 100%;
+	height: 100%;
+	margin: 0px;
+	overflow: hidden;
 }
+
 .dhx_cell_cont_layout{
 }
 .dhx_list_default_item{
