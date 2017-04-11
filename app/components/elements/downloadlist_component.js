@@ -7,9 +7,31 @@ define(['jquery', 'dhtmlx', 'app'], function($, dhtmlx, app){
                     return (obj.status === "finished")?true:false;
                return true;
           }
+          function getPeerList(tasklist){
+               debugger;
+               var taskPeer = tasklist.map(function(obj) {
+                    if (obj.additional.peer) {
+                         var listing = obj.additional.peer.map(function(obj) {
+                              return {
+                                   address : obj.address,
+                                   agent : obj.agent
+                              };
+                         });
+                    }
+                    var newObj = {
+                         title : obj.title,
+                         id : obj.id,
+                         list : listing
+                    };
+                    //debugger;
+                    return newObj;
+               });
+          }
+
 
           return {
                onSelectTab : function(id){
+                    app.components.layoutObject.cells("a").progressOn();
                     var list = app.components.tabbarObject.cells(id).attachList({
                          template : "<span style='color:green'><b>#name#</b></span> <br/> #status#<br/>#percent#% (#speed#KB/s)",
                          type : {
@@ -18,6 +40,7 @@ define(['jquery', 'dhtmlx', 'app'], function($, dhtmlx, app){
                     });
                     app.getDownloads().then(function(data){
                          var tasklist = null;
+                         var peerlist = null;
                          if(data.data.tasks){
                               tasklist = data.data.tasks.map(function(obj) {
                                    var newObj = {
@@ -28,13 +51,32 @@ define(['jquery', 'dhtmlx', 'app'], function($, dhtmlx, app){
                                    };
                                    return newObj;
                               });
+                              /*debugger;
+                              var taskPeer = data.data.tasks.map(function(obj) {
+                                   if (obj.additional.peer) {
+                                        obj.additional.peer.map(function(obj) {
+                                             return {
+                                                  address : obj.address,
+                                                  agent : obj.agent
+                                             };
+                                        });
+
+                                   }
+                                   var newObj = {
+                                        title : obj.title,
+                                        id : obj.id,
+                                        list : listing
+                                   };
+                                   return newObj;
+                              });*/
                          }
                          list.parse(tasklist, "json");
                          list.sort(function(objA, objB) {
                               return objA.percent > objB.percent ? -1 : 1;
                          }, "asc");
                          list.filter(filterFunc, app.components.tabbarObject.cells(id).getText());
-
+                         //var te = getPeerList(tasklist);
+                         app.components.layoutObject.cells("a").progressOff();
                     });
                     return true;
                },
