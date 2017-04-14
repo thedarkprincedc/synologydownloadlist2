@@ -6,8 +6,28 @@ define(['jquery', 'app', 'googleMaps', 'downloadlist_component'], function($, ap
                cells : [{ id : "a", width : 400, fix_size: [true,null], header : false },
                         { id : "b", header : false }]
           });
+          try{
+     		if(app.areResourcesAvailable().status != 200){
+     			throw "Resource Directory is not available";
+     		}else{
+     			if(synokey = app.getLoginToken().responseJSON){
+     				app.config.synokey = (synokey.data.sid)? synokey.data.sid : "";
+     			}
+     			else{
+     				throw "No Synology credentials were supplied";
+     			}
+                    downloadList.init();
+                    googleMaps.init();
+     		}
+     	}catch(e){
+               dhtmlx.alert({
+                    type:"alert-error",
+				text: e,
+                    function(result){
 
-          downloadList.init();
-          googleMaps.init();
+                    }
+               });
+     	}
+
      })();
 });

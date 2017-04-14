@@ -1,18 +1,21 @@
 define(['jquery', 'dhtmlx'], function($, dhtmlx){
 	var app = {
+		areResourcesAvailable : function(){
+			return $.ajax({ url : "./resources/public", type : 'HEAD',  async: false });
+		},
 		getDownloads : function(){
-			return  $.get(app.config.resources.host + "/php/downloadviewerapp.php?action=getdownloads", {token : app.config.synokey});
+			return  $.get("./resources/public/api/getdownloadlist", {token : app.config.synokey});
 		},
 		getlocationsfromips : function(taskPeer){
-			$.post(app.config.resources.host + "/php/downloadviewerapp.php?action=getlocationsfromips", {
-				list : JSON.stringify(taskPeer)
-			});
+			return $.post("./resources/public/api/getlocationsfromips", { list : JSON.stringify(taskPeer) });
 		},
-		components : {}
+		getLoginToken : function(){
+			return $.ajax({ type: "GET", url: "./resources/public/api/getlogintoken", async: false });
+		},
+		components : {},
+		config:{}
 	}, synokey;
-	app.config = $.ajax({ type: "GET", url: "config.json", async: false }).responseJSON;
-	if(synokey = $.ajax({ type: "GET", url: app.config.resources.host + "/php/downloadviewerapp.php?action=getlogintoken", async: false }).responseJSON){
-		app.config.synokey = (synokey.data.sid)? synokey.data.sid : "";
-	}
+
+	
 	return app;
 });

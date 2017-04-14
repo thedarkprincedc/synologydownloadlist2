@@ -1,7 +1,0 @@
-{
-     "appname" : "Synology Download List",
-     "resources" : {
-          "host" : "http://localhost:9000",
-          "dir" : "app"
-     }
-}

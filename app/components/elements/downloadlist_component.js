@@ -23,7 +23,6 @@ define(['jquery', 'dhtmlx', 'app'], function($, dhtmlx, app){
                          id : obj.id,
                          list : listing
                     };
-                    //debugger;
                     return newObj;
                });
           }
@@ -49,33 +48,25 @@ define(['jquery', 'dhtmlx', 'app'], function($, dhtmlx, app){
                                         percent : parseFloat(((obj.additional.transfer.size_downloaded / obj.size)*100).toFixed(2)),
                                         speed : ((obj.additional.transfer.speed_download) / 1000).toFixed(2)
                                    };
-                                   return newObj;
-                              });
-                              /*debugger;
-                              var taskPeer = data.data.tasks.map(function(obj) {
-                                   if (obj.additional.peer) {
-                                        obj.additional.peer.map(function(obj) {
+                                   if(obj.status !== "finished"){
+                                        newObj.peer = obj.additional.peer.map(function(obj) {
                                              return {
                                                   address : obj.address,
                                                   agent : obj.agent
                                              };
                                         });
-
                                    }
-                                   var newObj = {
-                                        title : obj.title,
-                                        id : obj.id,
-                                        list : listing
-                                   };
+
                                    return newObj;
-                              });*/
+                              });
                          }
+                         app.tasklist = tasklist;
                          list.parse(tasklist, "json");
                          list.sort(function(objA, objB) {
                               return objA.percent > objB.percent ? -1 : 1;
                          }, "asc");
                          list.filter(filterFunc, app.components.tabbarObject.cells(id).getText());
-                         //var te = getPeerList(tasklist);
+
                          app.components.layoutObject.cells("a").progressOff();
                     });
                     return true;
