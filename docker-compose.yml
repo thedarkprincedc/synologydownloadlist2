@@ -7,11 +7,16 @@ services:
           container_name: syno_downloadlist_frontend
           ports:
                - "9000:80"
+          volumes:
+              - "./app:/app"
+              - "./resources/synodownload-resources:/app/resources"
           environment:
-               - SYNOLOGY_HOST=${SYNOLOGY_HOST}
-               - SYNOLOGY_PORT=${SYNOLOGY_PORT}
-               - SYNOLOGY_IPLOOKUP_HOST=${SYNOLOGY_IPLOOKUP_HOST}
-               - SYNOLOGY_IPLOOKUP_PORT=${SYNOLOGY_IPLOOKUP_PORT}
+               - SYNOLOGY_HOST=[localhost]
+               - SYNOLOGY_PORT=[port]
+               - SYNOLOGY_USERNAME=[username]
+               - SYNOLOGY_PASSWORD=[password]
+               - IPLOOKUP_HOST=${SYNOLOGY_IPLOOKUP_HOST}
+               - IPLOOKUP_PORT=8080
           links:
                - ipaddress_lookup
      ipaddress_lookup:
